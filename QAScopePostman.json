@@ -1,0 +1,59 @@
+{
+	"id": "0e2a6ff2-e608-4df7-be01-d07eafc03048",
+	"name": "SNW LOCAL",
+	"values": [
+		{
+			"key": "url",
+			"value": "https://sdc-seat-network-web-api.dev.code.seat.cloud.vwgroup.com",
+			"enabled": true
+		},
+		{
+			"key": "code",
+			"value": "200",
+			"enabled": true
+		},
+		{
+			"key": "country",
+			"value": "ESP",
+			"enabled": true
+		},
+		{
+			"key": "kvps",
+			"value": "12345",
+			"enabled": true
+		},
+		{
+			"key": "JsonSchema",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "investorCode",
+			"value": "CZ020",
+			"enabled": true
+		},
+		{
+			"key": "region",
+			"value": "CAT",
+			"enabled": true
+		},
+		{
+			"key": "bnr",
+			"value": "023",
+			"enabled": true
+		},
+		{
+			"key": "subRegion",
+			"value": "31",
+			"enabled": true
+		},
+		{
+			"key": "variable_key",
+			"value": "",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2019-12-12T10:41:06.000Z",
+	"_postman_exported_using": "Postman/7.13.0"
+}

@@ -1,0 +1,1503 @@
+{
+	"info": {
+		"_postman_id": "b3d94fc1-8dc1-43d9-a47e-00a668c11f62",
+		"name": "SNW Integration",
+		"description": "All regression tests for SNW integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Installation tests",
+			"item": [
+				{
+					"name": "Market list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "08a7dd57-210f-447e-8b3b-8d5db034d5c0",
+								"exec": [
+									"// Test for expected response is OK",
+									"const jsonBody = pm.environment.get(\"JsonSchema\");",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function() {",
+									"    if (!pm.response.to.have.status(200)) {",
+									"        throw new Error(\"Status code is not 200\");",
+									"    }",
+									"});",
+									"",
+									"if (pm.response.to.have.status(200)) {",
+									"    ",
+									"    // Test to check market list has more than 1 item",
+									"    pm.test(\"Market list has more than one item\", function() {",
+									"        if (jsonData.data.length <= 1) {",
+									"        throw new Error (\"Markets list has less than 1 item\");",
+									"        }",
+									"    });",
+									"}",
+									"",
+									"// pm.test(\"Validation of returned schema\", function() {",
+									"//     try {",
+									"//         pm.expect(tv4.validate(jsonData, jsonBody, false, true), tv4.error).to.be.true;",
+									"//     } catch (e) {",
+									"//         let error = UnderstandError(tv4.error.message, tv4.error.dataPath);",
+									"//         throw new Error(error);",
+									"//     }",
+									"// });",
+									"",
+									"",
+									"",
+									"// function UnderstandError(errorMessage, errorPath) {",
+									"//     let errorArray = errorMessage.split(' ').splice(2, 5);",
+									"//     if (errorArray[0] === \"(not\") {",
+									"//         return \"Property not defined on schema (path: '\" + errorPath + \"')\";",
+									"//     }",
+									"//     let message = \"Api returned '\" + errorArray[0] + \"' and jsonBody expected: '\" + errorArray[2].substring(0, errorArray[2].length - 1) +",
+									"//         \"' on Path: '\" + errorPath + \"'\";",
+									"//     return message;",
+									"// }"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "87e605c0-a1b3-4f9e-b983-83b3891f4765",
+								"exec": [
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"status\": {\"type\": \"string\"},",
+									"        \"code\": {\"type\": \"string\"},",
+									"        \"message\": {\"type\": \"string\"},",
+									"        \"data\": {\"type\": \"array\",",
+									"            \"items\": {",
+									"                \"properties\":{",
+									"                    \"countryName\": {\"type\": \"string\"},",
+									"                    \"countryCodeISO2\": {\"type\": \"string\"},",
+									"                    \"importerBnrCode\": {\"type\": \"string\"},",
+									"                    \"countryCode\": {\"type\": \"string\"}",
+									"                }",
+									"            }",
+									"        },",
+									"    },",
+									"};",
+									"pm.environment.set(\"JsonSchema\", schema);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/snw-api-core/v1/markets",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"snw-api-core",
+								"v1",
+								"markets"
+							]
+						},
+						"description": "Service that returns all markets from DB"
+					},
+					"response": []
+				},
+				{
+					"name": "Market Country",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "27fca96e-93ce-4a04-8a47-49879a3b2723",
+								"exec": [
+									"const jsonBody = pm.environment.get(\"JsonSchema\");\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"// Test for expected response is OK\r",
+									"pm.test(\"Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.to.have.status(200)){\r",
+									"// Test to check the response JSON is given\r",
+									"    \r",
+									"    pm.test(\"ISO country code is valid\", function() {\r",
+									"        if(jsonData.data.countryCodeISO2.match(\"[A-Z]{2}\") != jsonData.data.countryCodeISO2){\r",
+									"        throw new Error (\"Invalid ISO country code\");\r",
+									"        }\r",
+									"    });\r",
+									"    pm.test(\"Country code is valid\", function() {\r",
+									"        if (jsonData.data.countryCode.match(\"[A-Z]{3}\") != jsonData.data.countryCode) {\r",
+									"        throw new Error (\"Invalid country code\");\r",
+									"        }\r",
+									"    });\r",
+									"}\r",
+									"//pm.environment.set(\"variable_key\", \"variable_value\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "57e9e425-01b1-482f-a4a4-aa8ad39488dd",
+								"exec": [
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"status\": {\"type\": \"string\"},",
+									"        \"code\": {\"type\": \"string\"},",
+									"        \"message\": {\"type\": \"string\"},",
+									"        \"data\": {\"type\": \"object\",",
+									"                \"properties\":{",
+									"                    \"countryName\": {\"type\": \"string\"},",
+									"                    \"countryCodeISO2\": {\"type\": \"string\"},",
+									"                    \"importerBnrCode\": {\"type\": \"string\"},",
+									"                    \"countryCode\": {\"type\": \"string\"}",
+									"                }",
+									"            },",
+									"        },",
+									"    };",
+									"    ",
+									"pm.environment.set(\"JsonSchema\", schema);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/snw-api-core/v1/markets/{{country}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"snw-api-core",
+								"v1",
+								"markets",
+								"{{country}}"
+							]
+						},
+						"description": "Service that returns all markets from DB"
+					},
+					"response": []
+				}
+			],
+			"description": "All integration tests related to installation information",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Brand list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ca4e472b-e128-4eae-8633-2af34c7f9c05",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"brandCode\": {\"type\": \"string\"},",
+							"                    \"brandName\": {\"type\": \"string\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5a32a108-2b55-4c31-809d-83227f230d10",
+						"exec": [
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							"",
+							"if (pm.response.to.have.status(200)) {",
+							"    ",
+							"    // Test to check market list has more than 1 item",
+							"    pm.test(\"Brand list has more than one item\", function() {",
+							"        if (jsonData.data.length <= 1) {",
+							"        throw new Error (\"Brand list has less than 1 item\");",
+							"        }",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/brands",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"brands"
+					]
+				},
+				"description": "Return a list of automotive brands"
+			},
+			"response": []
+		},
+		{
+			"name": "Business region list by country",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0af6abf2-d004-46cd-9088-dc30db32a23d",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"businessRegionCode\": {\"type\": \"string\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/business-regions?countryCode=ESP",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"business-regions"
+					],
+					"query": [
+						{
+							"key": "countryCode",
+							"value": "ESP"
+						}
+					]
+				},
+				"description": "Return the list of all business regions in a country, using ISO country code."
+			},
+			"response": []
+		},
+		{
+			"name": "Company group list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3583ebff-ca0d-4654-8c32-afe5ac048aa9",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\":{",
+							"                \"properties\":{",
+							"                    \"companyGroupCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"investorCode\": {\"type\": \"string\"}",
+							"                }",
+							"            },",
+							"        },",
+							"    }",
+							"};",
+							"    ",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0bc9e260-a72f-44eb-8219-35697a23c591",
+						"exec": [
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							"",
+							"if (pm.response.to.have.status(200)) {",
+							"    ",
+							"    // Test to check market list has more than 1 item",
+							"    pm.test(\"Company group list has more than one item\", function() {",
+							"        if (jsonData.data.length <= 1) {",
+							"        throw new Error (\"Company group list has less than 1 item\");",
+							"        }",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/companygroups",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"companygroups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Company group per code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f12e850b-4ae0-4392-bc89-04d6d749da88",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"object\",",
+							"                \"properties\":{",
+							"                    \"companyGroupCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"investorCode\": {\"type\": \"string\"}",
+							"                }",
+							"            },",
+							"        },",
+							"    };",
+							"    ",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/companygroups/{{code}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"companygroups",
+						"{{code}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Company group per country",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c0fa2992-5622-46ad-85df-0f6626c660dc",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\":{",
+							"                \"properties\":{",
+							"                    \"companyGroupCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"investorCode\": {\"type\": \"string\"}",
+							"                }",
+							"            },",
+							"        },",
+							"    }",
+							"};",
+							"    ",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/companygroups/countries/{{country}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"companygroups",
+						"countries",
+						"{{country}}"
+					]
+				},
+				"description": "Filter company groups per country"
+			},
+			"response": []
+		},
+		{
+			"name": "District manager list by country",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4fee3d7b-e098-4cb5-ba3c-82ce3dc70c04",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"districtManagerCode\": {\"type\": \"string\"},",
+							"                    \"districtManagerName\": {\"type\": \"string\"},",
+							"                    \"countryCodeISO3\": {\"type\": \"string\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "270a3077-ef27-453d-8932-41d4f0c6f2b7",
+						"exec": [
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							"",
+							"if (pm.response.to.have.status(200)) {",
+							"    ",
+							"    // Test to check market list has more than 1 item",
+							"    pm.test(\"District manager list has more than one item\", function() {",
+							"        if (jsonData.data.length < 1) {",
+							"        throw new Error (\"District manager list has less than 1 item\");",
+							"        }",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/district-managers?countryCode=ESP",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"district-managers"
+					],
+					"query": [
+						{
+							"key": "countryCode",
+							"value": "ESP"
+						}
+					]
+				},
+				"description": "Return the district manager list filtering by ISO country code."
+			},
+			"response": []
+		},
+		{
+			"name": "Importer by code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cf95ad52-b6a0-4f7a-88bc-1439ab4a93a2",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"object\",",
+							"                \"properties\":{",
+							"                    \"BNRCode\": {\"type\": \"string\"}",
+							"                }",
+							"            },",
+							"        },",
+							"    };",
+							"    ",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/importers/{{bnr}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"importers",
+						"{{bnr}}"
+					]
+				},
+				"description": "Obtain the BNR code."
+			},
+			"response": []
+		},
+		{
+			"name": "Installation ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fc9cc0ae-32a2-4383-b093-d3cbb014e5fe",
+						"exec": [
+							"/*pm.sendRequest(\"http://10.151.124.93:8001/snw-api-core/v1/installations/12345?countryCode=GER\", function (err, response) {",
+							"    console.log(response.json());",
+							"});*/",
+							"",
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f63bcef0-564c-414b-9295-1aef4c4430da",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"object\",",
+							"                \"properties\":{",
+							"                    \"kvps\": {\"type\": \"string\"},",
+							"                    \"latitude\": {\"type\": \"string\"},",
+							"                    \"longitude\": {\"type\": \"string\"},",
+							"                    \"companyGroupCode\": {\"type\": \"string\"},",
+							"                    \"ownershipStatusCode\": {\"type\": \"string\"}",
+							"                }",
+							"            },",
+							"        },",
+							"    };",
+							"    ",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/installations/{{kvps}}?countryCode=ESP",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"installations",
+						"{{kvps}}"
+					],
+					"query": [
+						{
+							"key": "countryCode",
+							"value": "ESP"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Investors list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "22bcad0f-04a5-46a0-81e9-4fd4d67454d7",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"investorCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"companyGroupCodes\": {\"type\": \"array\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d8fd88e4-61ba-4a44-a3d7-eac51ad426d2",
+						"exec": [
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							"",
+							"if (pm.response.to.have.status(200)) {",
+							"    ",
+							"    // Test to check market list has more than 1 item",
+							"    pm.test(\"Investor list has more than one item\", function() {",
+							"        if (jsonData.data.length <= 1) {",
+							"        throw new Error (\"Investor list has less than 1 item\");",
+							"        }",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/investors",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"investors"
+					]
+				},
+				"description": "Obtain investors list"
+			},
+			"response": []
+		},
+		{
+			"name": "Investors per company group",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4de9dc73-5bee-4ce8-909c-d8606790d7f4",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"object\",",
+							"            \"properties\":{",
+							"                \"investorCode\": {\"type\": \"string\"},",
+							"                \"name\": {\"type\": \"string\"},",
+							"                \"companyGroupCodes\": {\"type\": \"array\"}",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/investors/companygroups/{{code}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"investors",
+						"companygroups",
+						"{{code}}"
+					]
+				},
+				"description": "Return investors filtered by company group code."
+			},
+			"response": []
+		},
+		{
+			"name": "Investors per code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0a37b775-2787-48cd-86e0-0ba2ad957fc9",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"object\",",
+							"            \"properties\":{",
+							"                \"investorCode\": {\"type\": \"string\"},",
+							"                \"name\": {\"type\": \"string\"},",
+							"                \"companyGroupCodes\": {\"type\": \"array\"}",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/investors/{{investorCode}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"investors",
+						"{{investorCode}}"
+					]
+				},
+				"description": "Filtering investors list by code"
+			},
+			"response": []
+		},
+		{
+			"name": "Ownership-status list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "81e216eb-8a5d-499a-9404-acfecd500048",
+						"exec": [
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							"",
+							"if (pm.response.to.have.status(200)) {",
+							"    ",
+							"    // Test to check market list has more than 1 item",
+							"    pm.test(\"Ownership status list has more than one item\", function() {",
+							"        if (jsonData.data.length <= 1) {",
+							"        throw new Error (\"Ownership status list has less than 1 item\");",
+							"        }",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cf3ea27e-ab49-41a5-bbc6-976a22b5e27c",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"code\": {\"type\": \"string\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/ownership-status",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"ownership-status"
+					]
+				},
+				"description": "Ownership-status data list"
+			},
+			"response": []
+		},
+		{
+			"name": "Region list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "70d26a98-3bac-4be5-bdb6-fcf53fec9c51",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"regionCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"countryCode\": {\"type\": \"string\"},",
+							"                    \"subRegions\": {\"type\": \"array\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "910953c2-691a-445b-9819-604e75301b7f",
+						"exec": [
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							"",
+							"if (pm.response.to.have.status(200)) {",
+							"    ",
+							"    // Test to check market list has more than 1 item",
+							"    pm.test(\"Region list has more than one item\", function() {",
+							"        if (jsonData.data.length <= 1) {",
+							"        throw new Error (\"Region list has less than 1 item\");",
+							"        }",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/regions",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"regions"
+					]
+				},
+				"description": "Return full region list."
+			},
+			"response": []
+		},
+		{
+			"name": "Regions by country code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b8a904c7-f717-4d3f-9005-15f2e4464053",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"regionCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"countryCode\": {\"type\": \"string\"},",
+							"                    \"subRegions\": {\"type\": \"array\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/regions/countries/{{country}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"regions",
+						"countries",
+						"{{country}}"
+					]
+				},
+				"description": "Return the region filtered by country code"
+			},
+			"response": []
+		},
+		{
+			"name": "Region by code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8a8be204-2bab-4d46-b144-7deae5877313",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"object\",",
+							"            \"properties\":{",
+							"                    \"regionCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"countryCode\": {\"type\": \"string\"},",
+							"                    \"subRegions\": {\"type\": \"array\"}",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/regions/{{region}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"regions",
+						"{{region}}"
+					]
+				},
+				"description": "Return from the list a filtered result by region code."
+			},
+			"response": []
+		},
+		{
+			"name": "Road types list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "369867ec-d55d-45fb-b46f-d3ed9a178206",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"typeOfRoad\": {\"type\": \"string\"},",
+							"                    \"roadTypeShortened\": {\"type\": \"string\"},",
+							"                    \"roadTypeCode\": {\"type\": \"string\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4350113-869d-4eb4-a505-5cb5cb716f4e",
+						"exec": [
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							"",
+							"if (pm.response.to.have.status(200)) {",
+							"    ",
+							"    // Test to check market list has more than 1 item",
+							"    pm.test(\"Road types list has more than one item\", function() {",
+							"        if (jsonData.data.length <= 1) {",
+							"        throw new Error (\"Road types list has less than 1 item\");",
+							"        }",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/road-types",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"road-types"
+					]
+				},
+				"description": "Return all the roads type list."
+			},
+			"response": []
+		},
+		{
+			"name": "Subregion list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "95e88443-3b79-4308-9305-b8a808881604",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"subRegionCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"regionCode\": {\"type\": \"string\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8ab7c68-ba56-4bfd-9ddf-8dde94cb6a8a",
+						"exec": [
+							"// Test for expected response is OK",
+							"const jsonBody = pm.environment.get(\"JsonSchema\");",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    if (!pm.response.to.have.status(200)) {",
+							"        throw new Error(\"Status code is not 200\");",
+							"    }",
+							"});",
+							"",
+							"if (pm.response.to.have.status(200)) {",
+							"    ",
+							"    // Test to check market list has more than 1 item",
+							"    pm.test(\"Subregion list has more than one item\", function() {",
+							"        if (jsonData.data.length <= 1) {",
+							"        throw new Error (\"Subregion list has less than 1 item\");",
+							"        }",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/subregions",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"subregions"
+					]
+				},
+				"description": "Obtain the full subregion list."
+			},
+			"response": []
+		},
+		{
+			"name": "Subregions by country code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d44aa430-845a-4002-aa92-6bdc34818237",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"subRegionCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"regionCode\": {\"type\": \"string\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/subregions/countries/{{country}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"subregions",
+						"countries",
+						"{{country}}"
+					]
+				},
+				"description": "Return all the subregions included in a country."
+			},
+			"response": []
+		},
+		{
+			"name": "Subregion by region code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "446952e9-cbd3-4c14-8969-973237a91019",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"array\",",
+							"            \"items\": {",
+							"                \"properties\":{",
+							"                    \"subRegionCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"regionCode\": {\"type\": \"string\"}",
+							"                }",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/subregions/regions/{{region}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"subregions",
+						"regions",
+						"{{region}}"
+					]
+				},
+				"description": "Filter subregion list by region code."
+			},
+			"response": []
+		},
+		{
+			"name": "Subregion by code",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a1b76425-b053-4ac7-af67-35dd5f4d1849",
+						"exec": [
+							"const schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"status\": {\"type\": \"string\"},",
+							"        \"code\": {\"type\": \"string\"},",
+							"        \"message\": {\"type\": \"string\"},",
+							"        \"data\": {\"type\": \"object\",",
+							"            \"properties\":{",
+							"                    \"subRegionCode\": {\"type\": \"string\"},",
+							"                    \"name\": {\"type\": \"string\"},",
+							"                    \"regionCode\": {\"type\": \"string\"}",
+							"            }",
+							"        },",
+							"    },",
+							"};",
+							"pm.environment.set(\"JsonSchema\", schema);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/snw-api-core/v1/subregions/{{subRegion}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"snw-api-core",
+						"v1",
+						"subregions",
+						"{{subRegion}}"
+					]
+				},
+				"description": "Filter subregion list by subregion code."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "790ba4b4-7d7f-4406-8906-d03803a0e0b1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "647ce73e-48d4-45e5-80c1-791dbb759bc0",
+				"type": "text/javascript",
+				"exec": [
+					"const jsonBody = pm.environment.get(\"JsonSchema\");",
+					"const jsonData = pm.response.json();",
+					"  ",
+					"    pm.test(\"Response Json Status is 'Success'\", function() {",
+					"        pm.expect(jsonData.status).to.eql(\"Success\");",
+					"    });",
+					"",
+					"    pm.test(\"Response Json Code is '200'\", function() {",
+					"        pm.expect(jsonData.code).to.eql(\"200\");",
+					"    });",
+					"",
+					"    pm.test(\"Response Json Message is 'OK'\", function() {",
+					"        pm.expect(jsonData.message).to.eql(\"Ok\");",
+					"    });",
+					"",
+					"pm.test(\"Validation of returned schema\", function() {",
+					"    try {",
+					"        pm.expect(tv4.validate(jsonData, jsonBody, false, true), tv4.error).to.be.true;",
+					"    } catch (e) {",
+					"        let error = UnderstandError(tv4.error.message, tv4.error.dataPath);",
+					"        console.log(e);",
+					"        throw new Error(error);",
+					"    }",
+					"});",
+					"",
+					"function UnderstandError(errorMessage, errorPath) {",
+					"    let errorArray = errorMessage.split(' ').splice(2, 5);",
+					"    if (errorArray[0] === \"(not\") {",
+					"        return \"Property not defined on schema (path: '\" + errorPath + \"')\";",
+					"    }",
+					"    let message = \"Api returned '\" + errorArray[0] + \"' and jsonBody expected: '\" + errorArray[2].substring(0, errorArray[2].length - 1) +",
+					"        \"' on Path: '\" + errorPath + \"'\";",
+					"    return message;",
+					"}"
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
