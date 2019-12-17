@@ -1,0 +1,12 @@
+danielsanchezayala	1723S4200H7824V1300J
+
+SONAR: https://sonarqube-cicd.dev.code.seat.cloud.vwgroup.com/projects // Username: sdcoft 
+Password: 96n9d72vm9xOrUiugOrX
+
+LZ: 
+	Swagger: https://sdc-seat-network-web-api.dev.code.seat.cloud.vwgroup.com/swagger-ui.html
+	Gitlab: https://gitlab.shared.code.seat.cloud.vwgroup.com/ // danielsanchezayala // 1723S4200H7824V1300J
+	UI: https://sdc-seat-network-web.dev.code.seat.cloud.vwgroup.com/
+
+
+
