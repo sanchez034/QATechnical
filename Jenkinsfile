@@ -1,5 +1,4 @@
 
-
 @Library('build-pipelines') 
 	def  DATA_COLLECTION = params.Collection
   	def DATA_ENVIRONMENT = params.Environment
@@ -9,4 +8,4 @@
 	def DATA_ITINERATIONS = params.Itinerations
 	def DATA_DELAY = params.Delay
 	def DATA_TIMEOUT = params.Timeout
-integrationNewman(DATA_COLLECTION, DATA_ENVIRONMENT, DATA_FOLDER, DATA_FIELD, DATA_GLOBALS, DATA_ITINERATIONS, DATA_DELAY, DATA_TIMEOUT)
+integrationNewman(.,DATA_COLLECTION, DATA_ENVIRONMENT, DATA_FOLDER, DATA_FIELD, DATA_GLOBALS, DATA_ITINERATIONS, DATA_DELAY, DATA_TIMEOUT)
