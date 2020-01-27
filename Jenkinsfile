@@ -1,5 +1,4 @@
 
-
 @Library('build-pipelines') 
 	def  DATA_COLLECTION = params.Collection
   	def DATA_ENVIRONMENT = params.Environment
