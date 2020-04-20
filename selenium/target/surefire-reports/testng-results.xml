@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Command line suite" duration-ms="9177" started-at="2019-09-05T16:01:03 CEST" finished-at="2019-09-05T16:01:12 CEST">
+    <groups>
+    </groups>
+    <test name="Command line test" duration-ms="9177" started-at="2019-09-05T16:01:03 CEST" finished-at="2019-09-05T16:01:12 CEST">
+      <class name="FirstTest">
+        <test-method status="PASS" signature="setupTest()[pri:0, instance:FirstTest@5792a0]" name="setupTest" is-config="true" duration-ms="6706" started-at="2019-09-05T16:01:03 CEST" finished-at="2019-09-05T16:01:10 CEST">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setupTest -->
+        <test-method status="PASS" signature="firstTest()[pri:0, instance:FirstTest@5792a0]" name="firstTest" duration-ms="304" started-at="2019-09-05T16:01:10 CEST" finished-at="2019-09-05T16:01:10 CEST">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- firstTest -->
+        <test-method status="PASS" signature="teardownTest()[pri:0, instance:FirstTest@5792a0]" name="teardownTest" is-config="true" duration-ms="2099" started-at="2019-09-05T16:01:10 CEST" finished-at="2019-09-05T16:01:12 CEST">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- teardownTest -->
+      </class> <!-- FirstTest -->
+    </test> <!-- Command line test -->
+  </suite> <!-- Command line suite -->
+</testng-results>
